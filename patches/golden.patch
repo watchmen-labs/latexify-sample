@@ -1,5 +1,5 @@
 diff --git a/src/latexify/codegen/expression_codegen.py b/src/latexify/codegen/expression_codegen.py
-index 3c72219..e66b8c2 100644
+index 3c72219..479f278 100644
 --- a/src/latexify/codegen/expression_codegen.py
 +++ b/src/latexify/codegen/expression_codegen.py
 @@ -240,6 +240,99 @@ class ExpressionCodegen(ast.NodeVisitor):
@@ -88,7 +88,7 @@ index 3c72219..e66b8c2 100644
 +                return None
 +            # Python 3.7: ast.Num; 3.8+: ast.Constant
 +            exp_node = node.args[1]
-+            if isinstance(exp_node, ast.Num):  # type: ignore[attr-defined]
++            if isinstance(exp_node, ast.Num) and isinstance(exp_node.n, int):  # type: ignore[attr-defined]
 +                k = exp_node.n
 +            elif isinstance(exp_node, ast.Constant) and isinstance(exp_node.value, int):
 +                k = exp_node.value
