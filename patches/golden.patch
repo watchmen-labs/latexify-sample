@@ -1,0 +1,114 @@
+diff --git a/src/latexify/codegen/expression_codegen.py b/src/latexify/codegen/expression_codegen.py
+index 3c72219..e66b8c2 100644
+--- a/src/latexify/codegen/expression_codegen.py
++++ b/src/latexify/codegen/expression_codegen.py
+@@ -240,6 +240,99 @@ class ExpressionCodegen(ast.NodeVisitor):
+         else:
+             return None
+ 
++    def _latex_matrix_or_name(self, expr: ast.AST) -> str | None:
++        """Return LaTeX for a matrix literal (list) or a symbol name. None otherwise."""
++        if isinstance(expr, ast.Name):
++            # Boldface a bare symbol (do not run through IdentifierConverter; spec asks \mathbf{X}).
++            return rf"\mathbf{{{expr.id}}}"
++        if isinstance(expr, ast.List):
++            # Reuse the existing matrix generator by faking a minimal Call node.
++            fake = ast.Call(func=ast.Name(id="array", ctx=ast.Load()), args=[expr], keywords=[])
++            return self._generate_matrix(fake)
++        return None
++
++    def _wrap_parens(self, inner: str, head: str) -> str:
++        return rf"{head} \mathopen{{}}\left( {inner} \mathclose{{}}\right)"
++
++    def _render_linalg(self, node: ast.Call, func_name: str | None) -> str | None:
++        """Handle det / trace / matrix_rank / matrix_power / inv / pinv / norm in one place."""
++        if func_name in {"det", "trace", "matrix_rank", "inv", "pinv", "norm", "rank"}:
++            if len(node.args) != 1:
++                return None
++            
++            # Check if argument can be handled
++            arg = node.args[0]
++            if isinstance(arg, ast.Name):
++                base = rf"\mathbf{{{arg.id}}}"
++            elif isinstance(arg, ast.List):
++                # Reuse the existing matrix generator by faking a minimal Call node.
++                fake = ast.Call(func=ast.Name(id="array", ctx=ast.Load()), args=[arg], keywords=[])
++                base = self._generate_matrix(fake)
++                if base is None:
++                    return None
++            elif isinstance(arg, ast.Call) and ast_utils.extract_function_name_or_none(arg) == "array":
++                # Handle np.array calls
++                base = self._generate_matrix(arg)
++                if base is None:
++                    return None
++            elif isinstance(arg, ast.Call) and ast_utils.extract_function_name_or_none(arg) == "transpose":
++                # Handle transpose(X) specially to ensure it renders as \mathbf{X}^{\mathrm{T}}
++                if len(arg.args) == 1 and isinstance(arg.args[0], ast.Name):
++                    base = rf"\mathbf{{{arg.args[0].id}}}^{{\mathrm{{T}}}}"
++                else:
++                    arg_latex = self.visit(arg)
++                    base = arg_latex.replace("^\\intercal", "^{\\mathrm{T}}")
++            elif isinstance(arg, ast.BinOp) and isinstance(arg.op, ast.MatMult):
++                # Handle matrix multiplication specially
++                left_latex = self.visit(arg.left)
++                right_latex = self.visit(arg.right)
++                # Convert simple names to bold
++                if isinstance(arg.left, ast.Name):
++                    left_latex = rf"\mathbf{{{arg.left.id}}}"
++                if isinstance(arg.right, ast.Name):
++                    right_latex = rf"\mathbf{{{arg.right.id}}}"
++                base = rf"{left_latex} {right_latex}"
++            else:
++                # For other complex expressions, visit normally
++                arg_latex = self.visit(arg)
++                base = arg_latex
++                
++            # Apply appropriate wrapping based on function and argument type
++            if func_name == "det":
++                return self._wrap_parens(base, r"\det")
++            if func_name in ("matrix_rank", "rank"):
++                return self._wrap_parens(base, r"\mathrm{rank}")
++            if func_name == "trace":
++                return self._wrap_parens(base, r"\mathrm{tr}")
++            if func_name == "norm":
++                return rf"\left\| {base} \right\|"
++            if func_name == "inv":
++                # For inv, wrap complex expressions in parentheses (but not simple matrices)
++                if isinstance(arg, ast.BinOp) or (isinstance(arg, ast.Call) and ast_utils.extract_function_name_or_none(arg) == "transpose"):
++                    return rf"\left( {base} \right)^{{-1}}"
++                elif isinstance(arg, ast.Call) and ast_utils.extract_function_name_or_none(arg) == "array":
++                    return rf"{base}^{{-1}}"
++                else:
++                    return rf"{base}^{{-1}}"
++            if func_name == "pinv":
++                return rf"{base}^{{+}}"
++
++        if func_name == "matrix_power":
++            if len(node.args) != 2:
++                return None
++            # Python 3.7: ast.Num; 3.8+: ast.Constant
++            exp_node = node.args[1]
++            if isinstance(exp_node, ast.Num):  # type: ignore[attr-defined]
++                k = exp_node.n
++            elif isinstance(exp_node, ast.Constant) and isinstance(exp_node.value, int):
++                k = exp_node.value
++            else:
++                return None
++            base = self._latex_matrix_or_name(node.args[0])
++            return None if base is None else rf"{base}^{{{k}}}"
++
++        return None
++
+     def visit_Call(self, node: ast.Call) -> str:
+         """Visit a Call node."""
+         func_name = ast_utils.extract_function_name_or_none(node)
+@@ -257,7 +350,8 @@ class ExpressionCodegen(ast.NodeVisitor):
+         elif func_name == "transpose":
+             special_latex = self._generate_transpose(node)
+         else:
+-            special_latex = None
++            # One-stop handler for linalg sugar (det, trace, matrix_rank, matrix_power, inv, pinv, norm, rank)
++            special_latex = self._render_linalg(node, func_name)
+ 
+         if special_latex is not None:
+             return special_latex

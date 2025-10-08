@@ -1,0 +1,1657 @@
+........................................................................ [ 10%]
+........................................................................ [ 21%]
+........................................................................ [ 31%]
+........................................................................ [ 42%]
+........................................................................ [ 52%]
+........................................................................ [ 63%]
+........................................................................ [ 73%]
+.................................FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF..... [ 84%]
+........................................................................ [ 94%]
+.....................................                                    [100%]
+=================================== FAILURES ===================================
+_ test_call_determinant[det(A)-\\det \\mathopen{}\\left( \\mathbf{A} \\mathclose{}\\right)] _
+
+code = 'det(A)'
+latex = '\\det \\mathopen{}\\left( \\mathbf{A} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("det(A)", r"\det \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("det(b)", r"\det \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "det([[1, 2], [3, 4]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[a, b], [c, d]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det(C @ D)",
+                r"\det \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "det(transpose(E))",
+                r"\det \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "det(np.array([[1, 2], [3, 4]]))",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_determinant(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{det...ose{}\\right)' == '\\det \\math...ose{}\\right)'
+E         
+E         - \det \mathopen{}\left( \mathbf{A} \mathclose{}\right)
+E         ?                        -------- -
+E         + \mathrm{det} \mathopen{}\left( A \mathclose{}\right)
+E         ?  +++++++   +
+
+src/latexify/codegen/expression_codegen_test.py:1128: AssertionError
+_ test_call_determinant[det(b)-\\det \\mathopen{}\\left( \\mathbf{b} \\mathclose{}\\right)] _
+
+code = 'det(b)'
+latex = '\\det \\mathopen{}\\left( \\mathbf{b} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("det(A)", r"\det \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("det(b)", r"\det \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "det([[1, 2], [3, 4]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[a, b], [c, d]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det(C @ D)",
+                r"\det \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "det(transpose(E))",
+                r"\det \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "det(np.array([[1, 2], [3, 4]]))",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_determinant(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{det...ose{}\\right)' == '\\det \\math...ose{}\\right)'
+E         
+E         - \det \mathopen{}\left( \mathbf{b} \mathclose{}\right)
+E         ?                        ----- ----
+E         + \mathrm{det} \mathopen{}\left( b \mathclose{}\right)
+E         ?  +++++++   +
+
+src/latexify/codegen/expression_codegen_test.py:1128: AssertionError
+_ test_call_determinant[det([[1, 2], [3, 4]])-\\det \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\mathclose{}\\right)] _
+
+code = 'det([[1, 2], [3, 4]])'
+latex = '\\det \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("det(A)", r"\det \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("det(b)", r"\det \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "det([[1, 2], [3, 4]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[a, b], [c, d]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det(C @ D)",
+                r"\det \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "det(transpose(E))",
+                r"\det \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "det(np.array([[1, 2], [3, 4]]))",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_determinant(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{det...ose{}\\right)' == '\\det \\math...ose{}\\right)'
+E         
+E         - \det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \mathclose{}\right)
+E         + \mathrm{det} \mathopen{}\left( \mathopen{}\left[ \mathopen{}\left[ 1, 2 \mathclose{}\right], \mathopen{}\left[ 3, 4 \mathclose{}\right] \mathclose{}\right] \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1128: AssertionError
+_ test_call_determinant[det([[1, 2, 3], [4, 5, 6], [7, 8, 9]])-\\det \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix} \\mathclose{}\\right)] _
+
+code = 'det([[1, 2, 3], [4, 5, 6], [7, 8, 9]])'
+latex = '\\det \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("det(A)", r"\det \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("det(b)", r"\det \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "det([[1, 2], [3, 4]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[a, b], [c, d]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det(C @ D)",
+                r"\det \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "det(transpose(E))",
+                r"\det \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "det(np.array([[1, 2], [3, 4]]))",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_determinant(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{det...ose{}\\right)' == '\\det \\math...ose{}\\right)'
+E         
+E         - \det \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)
+E         + \mathrm{det} \mathopen{}\left( \mathopen{}\left[ \mathopen{}\left[ 1, 2, 3 \mathclose{}\right], \mathopen{}\left[ 4, 5, 6 \mathclose{}\right], \mathopen{}\left[ 7, 8, 9 \mathclose{}\right] \mathclose{}\right] \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1128: AssertionError
+_ test_call_determinant[det([[a, b], [c, d]])-\\det \\mathopen{}\\left( \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix} \\mathclose{}\\right)] _
+
+code = 'det([[a, b], [c, d]])'
+latex = '\\det \\mathopen{}\\left( \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("det(A)", r"\det \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("det(b)", r"\det \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "det([[1, 2], [3, 4]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[a, b], [c, d]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det(C @ D)",
+                r"\det \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "det(transpose(E))",
+                r"\det \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "det(np.array([[1, 2], [3, 4]]))",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_determinant(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{det...ose{}\\right)' == '\\det \\math...ose{}\\right)'
+E         
+E         - \det \mathopen{}\left( \begin{bmatrix} a & b \\ c & d \end{bmatrix} \mathclose{}\right)
+E         + \mathrm{det} \mathopen{}\left( \mathopen{}\left[ \mathopen{}\left[ a, b \mathclose{}\right], \mathopen{}\left[ c, d \mathclose{}\right] \mathclose{}\right] \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1128: AssertionError
+_ test_call_determinant[det(C @ D)-\\det \\mathopen{}\\left( \\mathbf{C} \\mathbf{D} \\mathclose{}\\right)] _
+
+code = 'det(C @ D)'
+latex = '\\det \\mathopen{}\\left( \\mathbf{C} \\mathbf{D} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("det(A)", r"\det \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("det(b)", r"\det \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "det([[1, 2], [3, 4]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[a, b], [c, d]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det(C @ D)",
+                r"\det \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "det(transpose(E))",
+                r"\det \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "det(np.array([[1, 2], [3, 4]]))",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_determinant(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{det...ose{}\\right)' == '\\det \\math...ose{}\\right)'
+E         
+E         - \det \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)
+E         ?                        -------- ^^^^^^^^^^ -
+E         + \mathrm{det} \mathopen{}\left( C D \mathclose{}\right)
+E         ?  +++++++   +                    ^
+
+src/latexify/codegen/expression_codegen_test.py:1128: AssertionError
+_ test_call_determinant[det(transpose(E))-\\det \\mathopen{}\\left( \\mathbf{E}^{\\mathrm{T}} \\mathclose{}\\right)] _
+
+code = 'det(transpose(E))'
+latex = '\\det \\mathopen{}\\left( \\mathbf{E}^{\\mathrm{T}} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("det(A)", r"\det \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("det(b)", r"\det \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "det([[1, 2], [3, 4]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[a, b], [c, d]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det(C @ D)",
+                r"\det \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "det(transpose(E))",
+                r"\det \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "det(np.array([[1, 2], [3, 4]]))",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_determinant(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{det...ose{}\\right)' == '\\det \\math...ose{}\\right)'
+E         
+E         - \det \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)
+E         ?                                   - ^ ^^^^^^^^
+E         + \mathrm{det} \mathopen{}\left( \mathbf{E}^\intercal \mathclose{}\right)
+E         ?  +++++++   +                               ^^^^^^ ^
+
+src/latexify/codegen/expression_codegen_test.py:1128: AssertionError
+_ test_call_determinant[det(np.array([[1, 2], [3, 4]]))-\\det \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\mathclose{}\\right)] _
+
+code = 'det(np.array([[1, 2], [3, 4]]))'
+latex = '\\det \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("det(A)", r"\det \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("det(b)", r"\det \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "det([[1, 2], [3, 4]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det([[a, b], [c, d]])",
+                r"\det \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "det(C @ D)",
+                r"\det \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "det(transpose(E))",
+                r"\det \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "det(np.array([[1, 2], [3, 4]]))",
+                r"\det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_determinant(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{det...ose{}\\right)' == '\\det \\math...ose{}\\right)'
+E         
+E         - \det \mathopen{}\left( \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \mathclose{}\right)
+E         + \mathrm{det} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \mathclose{}\right)
+E         ?  +++++++   +
+
+src/latexify/codegen/expression_codegen_test.py:1128: AssertionError
+_ test_call_trace[trace(A)-\\mathrm{tr} \\mathopen{}\\left( \\mathbf{A} \\mathclose{}\\right)] _
+
+code = 'trace(A)'
+latex = '\\mathrm{tr} \\mathopen{}\\left( \\mathbf{A} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("trace(A)", r"\mathrm{tr} \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("trace(b)", r"\mathrm{tr} \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "trace([[1, 2], [3, 4]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[a, b], [c, d]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace(C @ D)",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "trace(transpose(E))",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "trace(np.array([[1, 2], [3, 4]]))",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_trace(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{tra...ose{}\\right)' == '\\mathrm{tr}...ose{}\\right)'
+E         
+E         - \mathrm{tr} \mathopen{}\left( \mathbf{A} \mathclose{}\right)
+E         ?                               -------- -
+E         + \mathrm{trace} \mathopen{}\left( A \mathclose{}\right)
+E         ?           +++
+
+src/latexify/codegen/expression_codegen_test.py:1170: AssertionError
+_ test_call_trace[trace(b)-\\mathrm{tr} \\mathopen{}\\left( \\mathbf{b} \\mathclose{}\\right)] _
+
+code = 'trace(b)'
+latex = '\\mathrm{tr} \\mathopen{}\\left( \\mathbf{b} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("trace(A)", r"\mathrm{tr} \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("trace(b)", r"\mathrm{tr} \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "trace([[1, 2], [3, 4]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[a, b], [c, d]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace(C @ D)",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "trace(transpose(E))",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "trace(np.array([[1, 2], [3, 4]]))",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_trace(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{tra...ose{}\\right)' == '\\mathrm{tr}...ose{}\\right)'
+E         
+E         - \mathrm{tr} \mathopen{}\left( \mathbf{b} \mathclose{}\right)
+E         ?                               ----- ----
+E         + \mathrm{trace} \mathopen{}\left( b \mathclose{}\right)
+E         ?           +++
+
+src/latexify/codegen/expression_codegen_test.py:1170: AssertionError
+_ test_call_trace[trace([[1, 2], [3, 4]])-\\mathrm{tr} \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\mathclose{}\\right)] _
+
+code = 'trace([[1, 2], [3, 4]])'
+latex = '\\mathrm{tr} \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("trace(A)", r"\mathrm{tr} \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("trace(b)", r"\mathrm{tr} \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "trace([[1, 2], [3, 4]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[a, b], [c, d]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace(C @ D)",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "trace(transpose(E))",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "trace(np.array([[1, 2], [3, 4]]))",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_trace(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{tra...ose{}\\right)' == '\\mathrm{tr}...ose{}\\right)'
+E         
+E         - \mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \mathclose{}\right)
+E         + \mathrm{trace} \mathopen{}\left( \mathopen{}\left[ \mathopen{}\left[ 1, 2 \mathclose{}\right], \mathopen{}\left[ 3, 4 \mathclose{}\right] \mathclose{}\right] \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1170: AssertionError
+_ test_call_trace[trace([[1, 2, 3], [4, 5, 6], [7, 8, 9]])-\\mathrm{tr} \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix} \\mathclose{}\\right)] _
+
+code = 'trace([[1, 2, 3], [4, 5, 6], [7, 8, 9]])'
+latex = '\\mathrm{tr} \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("trace(A)", r"\mathrm{tr} \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("trace(b)", r"\mathrm{tr} \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "trace([[1, 2], [3, 4]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[a, b], [c, d]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace(C @ D)",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "trace(transpose(E))",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "trace(np.array([[1, 2], [3, 4]]))",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_trace(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{tra...ose{}\\right)' == '\\mathrm{tr}...ose{}\\right)'
+E         
+E         - \mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)
+E         + \mathrm{trace} \mathopen{}\left( \mathopen{}\left[ \mathopen{}\left[ 1, 2, 3 \mathclose{}\right], \mathopen{}\left[ 4, 5, 6 \mathclose{}\right], \mathopen{}\left[ 7, 8, 9 \mathclose{}\right] \mathclose{}\right] \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1170: AssertionError
+_ test_call_trace[trace([[a, b], [c, d]])-\\mathrm{tr} \\mathopen{}\\left( \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix} \\mathclose{}\\right)] _
+
+code = 'trace([[a, b], [c, d]])'
+latex = '\\mathrm{tr} \\mathopen{}\\left( \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("trace(A)", r"\mathrm{tr} \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("trace(b)", r"\mathrm{tr} \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "trace([[1, 2], [3, 4]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[a, b], [c, d]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace(C @ D)",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "trace(transpose(E))",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "trace(np.array([[1, 2], [3, 4]]))",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_trace(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{tra...ose{}\\right)' == '\\mathrm{tr}...ose{}\\right)'
+E         
+E         - \mathrm{tr} \mathopen{}\left( \begin{bmatrix} a & b \\ c & d \end{bmatrix} \mathclose{}\right)
+E         + \mathrm{trace} \mathopen{}\left( \mathopen{}\left[ \mathopen{}\left[ a, b \mathclose{}\right], \mathopen{}\left[ c, d \mathclose{}\right] \mathclose{}\right] \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1170: AssertionError
+_ test_call_trace[trace(C @ D)-\\mathrm{tr} \\mathopen{}\\left( \\mathbf{C} \\mathbf{D} \\mathclose{}\\right)] _
+
+code = 'trace(C @ D)'
+latex = '\\mathrm{tr} \\mathopen{}\\left( \\mathbf{C} \\mathbf{D} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("trace(A)", r"\mathrm{tr} \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("trace(b)", r"\mathrm{tr} \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "trace([[1, 2], [3, 4]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[a, b], [c, d]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace(C @ D)",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "trace(transpose(E))",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "trace(np.array([[1, 2], [3, 4]]))",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_trace(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{tra...ose{}\\right)' == '\\mathrm{tr}...ose{}\\right)'
+E         
+E         - \mathrm{tr} \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)
+E         ?                               -------- ^^^^^^^^^^ -
+E         + \mathrm{trace} \mathopen{}\left( C D \mathclose{}\right)
+E         ?           +++                     ^
+
+src/latexify/codegen/expression_codegen_test.py:1170: AssertionError
+_ test_call_trace[trace(transpose(E))-\\mathrm{tr} \\mathopen{}\\left( \\mathbf{E}^{\\mathrm{T}} \\mathclose{}\\right)] _
+
+code = 'trace(transpose(E))'
+latex = '\\mathrm{tr} \\mathopen{}\\left( \\mathbf{E}^{\\mathrm{T}} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("trace(A)", r"\mathrm{tr} \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("trace(b)", r"\mathrm{tr} \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "trace([[1, 2], [3, 4]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[a, b], [c, d]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace(C @ D)",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "trace(transpose(E))",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "trace(np.array([[1, 2], [3, 4]]))",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_trace(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{tra...ose{}\\right)' == '\\mathrm{tr}...ose{}\\right)'
+E         
+E         - \mathrm{tr} \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)
+E         ?                                          - ^ ^^^^^^^^
+E         + \mathrm{trace} \mathopen{}\left( \mathbf{E}^\intercal \mathclose{}\right)
+E         ?           +++                                ^^^^^^ ^
+
+src/latexify/codegen/expression_codegen_test.py:1170: AssertionError
+_ test_call_trace[trace(np.array([[1, 2], [3, 4]]))-\\mathrm{tr} \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\mathclose{}\\right)] _
+
+code = 'trace(np.array([[1, 2], [3, 4]]))'
+latex = '\\mathrm{tr} \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("trace(A)", r"\mathrm{tr} \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("trace(b)", r"\mathrm{tr} \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+            (
+                "trace([[1, 2], [3, 4]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 & 3 \\"
+                r" 4 & 5 & 6 \\"
+                r" 7 & 8 & 9 \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace([[a, b], [c, d]])",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} a & b \\"
+                r" c & d \end{bmatrix} \mathclose{}\right)",
+            ),
+            (
+                "trace(C @ D)",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{C} \mathbf{D} \mathclose{}\right)",
+            ),
+            (
+                "trace(transpose(E))",
+                r"\mathrm{tr} \mathopen{}\left( \mathbf{E}^{\mathrm{T}} \mathclose{}\right)",
+            ),
+            (
+                "trace(np.array([[1, 2], [3, 4]]))",
+                r"\mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\"
+                r" 3 & 4 \end{bmatrix} \mathclose{}\right)",
+            ),
+        ],
+    )
+    def test_call_trace(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{tra...ose{}\\right)' == '\\mathrm{tr}...ose{}\\right)'
+E         
+E         - \mathrm{tr} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \mathclose{}\right)
+E         + \mathrm{trace} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \mathclose{}\right)
+E         ?           +++
+
+src/latexify/codegen/expression_codegen_test.py:1170: AssertionError
+____________________ test_call_inv[inv(A)-\\mathbf{A}^{-1}] ____________________
+
+code = 'inv(A)', latex = '\\mathbf{A}^{-1}'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("inv(A)", r"\mathbf{A}^{-1}"),
+            ("inv(b)", r"\mathbf{b}^{-1}"),
+            (
+                "inv([[1, 2], [3, 4]])",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[a, b], [c, d]])",
+                r"\begin{bmatrix} a & b \\ c & d \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv(C @ D)",
+                r"\left( \mathbf{C} \mathbf{D} \right)^{-1}",
+            ),
+            (
+                "inv(transpose(E))",
+                r"\left( \mathbf{E}^{\mathrm{T}} \right)^{-1}",
+            ),
+            (
+                "inv(np.array([[1, 2], [3, 4]]))",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+        ],
+    )
+    def test_call_inv(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{inv...ose{}\\right)' == '\\mathbf{A}^{-1}'
+E         
+E         - \mathbf{A}^{-1}
+E         + \mathrm{inv} \mathopen{}\left( A \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1207: AssertionError
+____________________ test_call_inv[inv(b)-\\mathbf{b}^{-1}] ____________________
+
+code = 'inv(b)', latex = '\\mathbf{b}^{-1}'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("inv(A)", r"\mathbf{A}^{-1}"),
+            ("inv(b)", r"\mathbf{b}^{-1}"),
+            (
+                "inv([[1, 2], [3, 4]])",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[a, b], [c, d]])",
+                r"\begin{bmatrix} a & b \\ c & d \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv(C @ D)",
+                r"\left( \mathbf{C} \mathbf{D} \right)^{-1}",
+            ),
+            (
+                "inv(transpose(E))",
+                r"\left( \mathbf{E}^{\mathrm{T}} \right)^{-1}",
+            ),
+            (
+                "inv(np.array([[1, 2], [3, 4]]))",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+        ],
+    )
+    def test_call_inv(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{inv...ose{}\\right)' == '\\mathbf{b}^{-1}'
+E         
+E         - \mathbf{b}^{-1}
+E         + \mathrm{inv} \mathopen{}\left( b \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1207: AssertionError
+_ test_call_inv[inv([[1, 2], [3, 4]])-\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix}^{-1}] _
+
+code = 'inv([[1, 2], [3, 4]])'
+latex = '\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix}^{-1}'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("inv(A)", r"\mathbf{A}^{-1}"),
+            ("inv(b)", r"\mathbf{b}^{-1}"),
+            (
+                "inv([[1, 2], [3, 4]])",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[a, b], [c, d]])",
+                r"\begin{bmatrix} a & b \\ c & d \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv(C @ D)",
+                r"\left( \mathbf{C} \mathbf{D} \right)^{-1}",
+            ),
+            (
+                "inv(transpose(E))",
+                r"\left( \mathbf{E}^{\mathrm{T}} \right)^{-1}",
+            ),
+            (
+                "inv(np.array([[1, 2], [3, 4]]))",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+        ],
+    )
+    def test_call_inv(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{inv...ose{}\\right)' == '\\begin{bmat...bmatrix}^{-1}'
+E         
+E         - \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}
+E         + \mathrm{inv} \mathopen{}\left( \mathopen{}\left[ \mathopen{}\left[ 1, 2 \mathclose{}\right], \mathopen{}\left[ 3, 4 \mathclose{}\right] \mathclose{}\right] \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1207: AssertionError
+_ test_call_inv[inv([[1, 2, 3], [4, 5, 6], [7, 8, 9]])-\\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix}^{-1}] _
+
+code = 'inv([[1, 2, 3], [4, 5, 6], [7, 8, 9]])'
+latex = '\\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix}^{-1}'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("inv(A)", r"\mathbf{A}^{-1}"),
+            ("inv(b)", r"\mathbf{b}^{-1}"),
+            (
+                "inv([[1, 2], [3, 4]])",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[a, b], [c, d]])",
+                r"\begin{bmatrix} a & b \\ c & d \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv(C @ D)",
+                r"\left( \mathbf{C} \mathbf{D} \right)^{-1}",
+            ),
+            (
+                "inv(transpose(E))",
+                r"\left( \mathbf{E}^{\mathrm{T}} \right)^{-1}",
+            ),
+            (
+                "inv(np.array([[1, 2], [3, 4]]))",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+        ],
+    )
+    def test_call_inv(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{inv...ose{}\\right)' == '\\begin{bmat...bmatrix}^{-1}'
+E         
+E         - \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}^{-1}
+E         + \mathrm{inv} \mathopen{}\left( \mathopen{}\left[ \mathopen{}\left[ 1, 2, 3 \mathclose{}\right], \mathopen{}\left[ 4, 5, 6 \mathclose{}\right], \mathopen{}\left[ 7, 8, 9 \mathclose{}\right] \mathclose{}\right] \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1207: AssertionError
+_ test_call_inv[inv([[a, b], [c, d]])-\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}^{-1}] _
+
+code = 'inv([[a, b], [c, d]])'
+latex = '\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}^{-1}'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("inv(A)", r"\mathbf{A}^{-1}"),
+            ("inv(b)", r"\mathbf{b}^{-1}"),
+            (
+                "inv([[1, 2], [3, 4]])",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[a, b], [c, d]])",
+                r"\begin{bmatrix} a & b \\ c & d \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv(C @ D)",
+                r"\left( \mathbf{C} \mathbf{D} \right)^{-1}",
+            ),
+            (
+                "inv(transpose(E))",
+                r"\left( \mathbf{E}^{\mathrm{T}} \right)^{-1}",
+            ),
+            (
+                "inv(np.array([[1, 2], [3, 4]]))",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+        ],
+    )
+    def test_call_inv(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{inv...ose{}\\right)' == '\\begin{bmat...bmatrix}^{-1}'
+E         
+E         - \begin{bmatrix} a & b \\ c & d \end{bmatrix}^{-1}
+E         + \mathrm{inv} \mathopen{}\left( \mathopen{}\left[ \mathopen{}\left[ a, b \mathclose{}\right], \mathopen{}\left[ c, d \mathclose{}\right] \mathclose{}\right] \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1207: AssertionError
+___ test_call_inv[inv(C @ D)-\\left( \\mathbf{C} \\mathbf{D} \\right)^{-1}] ____
+
+code = 'inv(C @ D)', latex = '\\left( \\mathbf{C} \\mathbf{D} \\right)^{-1}'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("inv(A)", r"\mathbf{A}^{-1}"),
+            ("inv(b)", r"\mathbf{b}^{-1}"),
+            (
+                "inv([[1, 2], [3, 4]])",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[a, b], [c, d]])",
+                r"\begin{bmatrix} a & b \\ c & d \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv(C @ D)",
+                r"\left( \mathbf{C} \mathbf{D} \right)^{-1}",
+            ),
+            (
+                "inv(transpose(E))",
+                r"\left( \mathbf{E}^{\mathrm{T}} \right)^{-1}",
+            ),
+            (
+                "inv(np.array([[1, 2], [3, 4]]))",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+        ],
+    )
+    def test_call_inv(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{inv...ose{}\\right)' == '\\left( \\ma...\\right)^{-1}'
+E         
+E         - \left( \mathbf{C} \mathbf{D} \right)^{-1}
+E         + \mathrm{inv} \mathopen{}\left( C D \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1207: AssertionError
+_ test_call_inv[inv(transpose(E))-\\left( \\mathbf{E}^{\\mathrm{T}} \\right)^{-1}] _
+
+code = 'inv(transpose(E))'
+latex = '\\left( \\mathbf{E}^{\\mathrm{T}} \\right)^{-1}'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("inv(A)", r"\mathbf{A}^{-1}"),
+            ("inv(b)", r"\mathbf{b}^{-1}"),
+            (
+                "inv([[1, 2], [3, 4]])",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[a, b], [c, d]])",
+                r"\begin{bmatrix} a & b \\ c & d \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv(C @ D)",
+                r"\left( \mathbf{C} \mathbf{D} \right)^{-1}",
+            ),
+            (
+                "inv(transpose(E))",
+                r"\left( \mathbf{E}^{\mathrm{T}} \right)^{-1}",
+            ),
+            (
+                "inv(np.array([[1, 2], [3, 4]]))",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+        ],
+    )
+    def test_call_inv(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{inv...ose{}\\right)' == '\\left( \\ma...\\right)^{-1}'
+E         
+E         - \left( \mathbf{E}^{\mathrm{T}} \right)^{-1}
+E         + \mathrm{inv} \mathopen{}\left( \mathbf{E}^\intercal \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1207: AssertionError
+_ test_call_inv[inv(np.array([[1, 2], [3, 4]]))-\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix}^{-1}] _
+
+code = 'inv(np.array([[1, 2], [3, 4]]))'
+latex = '\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix}^{-1}'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("inv(A)", r"\mathbf{A}^{-1}"),
+            ("inv(b)", r"\mathbf{b}^{-1}"),
+            (
+                "inv([[1, 2], [3, 4]])",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv([[a, b], [c, d]])",
+                r"\begin{bmatrix} a & b \\ c & d \end{bmatrix}^{-1}",
+            ),
+            (
+                "inv(C @ D)",
+                r"\left( \mathbf{C} \mathbf{D} \right)^{-1}",
+            ),
+            (
+                "inv(transpose(E))",
+                r"\left( \mathbf{E}^{\mathrm{T}} \right)^{-1}",
+            ),
+            (
+                "inv(np.array([[1, 2], [3, 4]]))",
+                r"\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}",
+            ),
+        ],
+    )
+    def test_call_inv(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{inv...ose{}\\right)' == '\\begin{bmat...bmatrix}^{-1}'
+E         
+E         - \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}^{-1}
+E         + \mathrm{inv} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1207: AssertionError
+___________ test_call_norm[norm(A)-\\left\\| \\mathbf{A} \\right\\|] ___________
+
+code = 'norm(A)', latex = '\\left\\| \\mathbf{A} \\right\\|'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("norm(A)", r"\left\| \mathbf{A} \right\|"),
+            ("norm(b)", r"\left\| \mathbf{b} \right\|"),
+            (
+                "norm([[1, 2], [3, 4]])",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\left\| \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[a, b], [c, d]])",
+                r"\left\| \begin{bmatrix} a & b \\ c & d \end{bmatrix} \right\|",
+            ),
+            (
+                "norm(C @ D)",
+                r"\left\| \mathbf{C} \mathbf{D} \right\|",
+            ),
+            (
+                "norm(transpose(E))",
+                r"\left\| \mathbf{E}^{\mathrm{T}} \right\|",
+            ),
+            (
+                "norm(np.array([[1, 2], [3, 4]]))",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+        ],
+    )
+    def test_call_norm(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{nor...ose{}\\right)' == '\\left\\| \\...A} \\right\\|'
+E         
+E         - \left\| \mathbf{A} \right\|
+E         + \mathrm{norm} \mathopen{}\left( A \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1244: AssertionError
+___________ test_call_norm[norm(b)-\\left\\| \\mathbf{b} \\right\\|] ___________
+
+code = 'norm(b)', latex = '\\left\\| \\mathbf{b} \\right\\|'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("norm(A)", r"\left\| \mathbf{A} \right\|"),
+            ("norm(b)", r"\left\| \mathbf{b} \right\|"),
+            (
+                "norm([[1, 2], [3, 4]])",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\left\| \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[a, b], [c, d]])",
+                r"\left\| \begin{bmatrix} a & b \\ c & d \end{bmatrix} \right\|",
+            ),
+            (
+                "norm(C @ D)",
+                r"\left\| \mathbf{C} \mathbf{D} \right\|",
+            ),
+            (
+                "norm(transpose(E))",
+                r"\left\| \mathbf{E}^{\mathrm{T}} \right\|",
+            ),
+            (
+                "norm(np.array([[1, 2], [3, 4]]))",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+        ],
+    )
+    def test_call_norm(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{nor...ose{}\\right)' == '\\left\\| \\...b} \\right\\|'
+E         
+E         - \left\| \mathbf{b} \right\|
+E         + \mathrm{norm} \mathopen{}\left( b \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1244: AssertionError
+_ test_call_norm[norm([[1, 2], [3, 4]])-\\left\\| \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\right\\|] _
+
+code = 'norm([[1, 2], [3, 4]])'
+latex = '\\left\\| \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\right\\|'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("norm(A)", r"\left\| \mathbf{A} \right\|"),
+            ("norm(b)", r"\left\| \mathbf{b} \right\|"),
+            (
+                "norm([[1, 2], [3, 4]])",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\left\| \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[a, b], [c, d]])",
+                r"\left\| \begin{bmatrix} a & b \\ c & d \end{bmatrix} \right\|",
+            ),
+            (
+                "norm(C @ D)",
+                r"\left\| \mathbf{C} \mathbf{D} \right\|",
+            ),
+            (
+                "norm(transpose(E))",
+                r"\left\| \mathbf{E}^{\mathrm{T}} \right\|",
+            ),
+            (
+                "norm(np.array([[1, 2], [3, 4]]))",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+        ],
+    )
+    def test_call_norm(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{nor...ose{}\\right)' == '\\left\\| \\...x} \\right\\|'
+E         
+E         - \left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|
+E         + \mathrm{norm} \mathopen{}\left( \mathopen{}\left[ \mathopen{}\left[ 1, 2 \mathclose{}\right], \mathopen{}\left[ 3, 4 \mathclose{}\right] \mathclose{}\right] \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1244: AssertionError
+_ test_call_norm[norm([[1, 2, 3], [4, 5, 6], [7, 8, 9]])-\\left\\| \\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix} \\right\\|] _
+
+code = 'norm([[1, 2, 3], [4, 5, 6], [7, 8, 9]])'
+latex = '\\left\\| \\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix} \\right\\|'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("norm(A)", r"\left\| \mathbf{A} \right\|"),
+            ("norm(b)", r"\left\| \mathbf{b} \right\|"),
+            (
+                "norm([[1, 2], [3, 4]])",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\left\| \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[a, b], [c, d]])",
+                r"\left\| \begin{bmatrix} a & b \\ c & d \end{bmatrix} \right\|",
+            ),
+            (
+                "norm(C @ D)",
+                r"\left\| \mathbf{C} \mathbf{D} \right\|",
+            ),
+            (
+                "norm(transpose(E))",
+                r"\left\| \mathbf{E}^{\mathrm{T}} \right\|",
+            ),
+            (
+                "norm(np.array([[1, 2], [3, 4]]))",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+        ],
+    )
+    def test_call_norm(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{nor...ose{}\\right)' == '\\left\\| \\...x} \\right\\|'
+E         
+E         - \left\| \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix} \right\|
+E         + \mathrm{norm} \mathopen{}\left( \mathopen{}\left[ \mathopen{}\left[ 1, 2, 3 \mathclose{}\right], \mathopen{}\left[ 4, 5, 6 \mathclose{}\right], \mathopen{}\left[ 7, 8, 9 \mathclose{}\right] \mathclose{}\right] \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1244: AssertionError
+_ test_call_norm[norm([[a, b], [c, d]])-\\left\\| \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix} \\right\\|] _
+
+code = 'norm([[a, b], [c, d]])'
+latex = '\\left\\| \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix} \\right\\|'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("norm(A)", r"\left\| \mathbf{A} \right\|"),
+            ("norm(b)", r"\left\| \mathbf{b} \right\|"),
+            (
+                "norm([[1, 2], [3, 4]])",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\left\| \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[a, b], [c, d]])",
+                r"\left\| \begin{bmatrix} a & b \\ c & d \end{bmatrix} \right\|",
+            ),
+            (
+                "norm(C @ D)",
+                r"\left\| \mathbf{C} \mathbf{D} \right\|",
+            ),
+            (
+                "norm(transpose(E))",
+                r"\left\| \mathbf{E}^{\mathrm{T}} \right\|",
+            ),
+            (
+                "norm(np.array([[1, 2], [3, 4]]))",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+        ],
+    )
+    def test_call_norm(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{nor...ose{}\\right)' == '\\left\\| \\...x} \\right\\|'
+E         
+E         - \left\| \begin{bmatrix} a & b \\ c & d \end{bmatrix} \right\|
+E         + \mathrm{norm} \mathopen{}\left( \mathopen{}\left[ \mathopen{}\left[ a, b \mathclose{}\right], \mathopen{}\left[ c, d \mathclose{}\right] \mathclose{}\right] \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1244: AssertionError
+___ test_call_norm[norm(C @ D)-\\left\\| \\mathbf{C} \\mathbf{D} \\right\\|] ___
+
+code = 'norm(C @ D)', latex = '\\left\\| \\mathbf{C} \\mathbf{D} \\right\\|'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("norm(A)", r"\left\| \mathbf{A} \right\|"),
+            ("norm(b)", r"\left\| \mathbf{b} \right\|"),
+            (
+                "norm([[1, 2], [3, 4]])",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\left\| \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[a, b], [c, d]])",
+                r"\left\| \begin{bmatrix} a & b \\ c & d \end{bmatrix} \right\|",
+            ),
+            (
+                "norm(C @ D)",
+                r"\left\| \mathbf{C} \mathbf{D} \right\|",
+            ),
+            (
+                "norm(transpose(E))",
+                r"\left\| \mathbf{E}^{\mathrm{T}} \right\|",
+            ),
+            (
+                "norm(np.array([[1, 2], [3, 4]]))",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+        ],
+    )
+    def test_call_norm(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{nor...ose{}\\right)' == '\\left\\| \\...D} \\right\\|'
+E         
+E         - \left\| \mathbf{C} \mathbf{D} \right\|
+E         + \mathrm{norm} \mathopen{}\left( C D \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1244: AssertionError
+_ test_call_norm[norm(transpose(E))-\\left\\| \\mathbf{E}^{\\mathrm{T}} \\right\\|] _
+
+code = 'norm(transpose(E))'
+latex = '\\left\\| \\mathbf{E}^{\\mathrm{T}} \\right\\|'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("norm(A)", r"\left\| \mathbf{A} \right\|"),
+            ("norm(b)", r"\left\| \mathbf{b} \right\|"),
+            (
+                "norm([[1, 2], [3, 4]])",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\left\| \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[a, b], [c, d]])",
+                r"\left\| \begin{bmatrix} a & b \\ c & d \end{bmatrix} \right\|",
+            ),
+            (
+                "norm(C @ D)",
+                r"\left\| \mathbf{C} \mathbf{D} \right\|",
+            ),
+            (
+                "norm(transpose(E))",
+                r"\left\| \mathbf{E}^{\mathrm{T}} \right\|",
+            ),
+            (
+                "norm(np.array([[1, 2], [3, 4]]))",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+        ],
+    )
+    def test_call_norm(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{nor...ose{}\\right)' == '\\left\\| \\...}} \\right\\|'
+E         
+E         - \left\| \mathbf{E}^{\mathrm{T}} \right\|
+E         + \mathrm{norm} \mathopen{}\left( \mathbf{E}^\intercal \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1244: AssertionError
+_ test_call_norm[norm(np.array([[1, 2], [3, 4]]))-\\left\\| \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\right\\|] _
+
+code = 'norm(np.array([[1, 2], [3, 4]]))'
+latex = '\\left\\| \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\right\\|'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("norm(A)", r"\left\| \mathbf{A} \right\|"),
+            ("norm(b)", r"\left\| \mathbf{b} \right\|"),
+            (
+                "norm([[1, 2], [3, 4]])",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[1, 2, 3], [4, 5, 6], [7, 8, 9]])",
+                r"\left\| \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix} \right\|",
+            ),
+            (
+                "norm([[a, b], [c, d]])",
+                r"\left\| \begin{bmatrix} a & b \\ c & d \end{bmatrix} \right\|",
+            ),
+            (
+                "norm(C @ D)",
+                r"\left\| \mathbf{C} \mathbf{D} \right\|",
+            ),
+            (
+                "norm(transpose(E))",
+                r"\left\| \mathbf{E}^{\mathrm{T}} \right\|",
+            ),
+            (
+                "norm(np.array([[1, 2], [3, 4]]))",
+                r"\left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|",
+            ),
+        ],
+    )
+    def test_call_norm(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{nor...ose{}\\right)' == '\\left\\| \\...x} \\right\\|'
+E         
+E         - \left\| \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \right\|
+E         + \mathrm{norm} \mathopen{}\left( \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1244: AssertionError
+_ test_call_rank[rank(A)-\\mathrm{rank} \\mathopen{}\\left( \\mathbf{A} \\mathclose{}\\right)] _
+
+code = 'rank(A)'
+latex = '\\mathrm{rank} \\mathopen{}\\left( \\mathbf{A} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("rank(A)", r"\mathrm{rank} \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("rank(b)", r"\mathrm{rank} \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+        ],
+    )
+    def test_call_rank(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{ran...ose{}\\right)' == '\\mathrm{ran...ose{}\\right)'
+E         
+E         - \mathrm{rank} \mathopen{}\left( \mathbf{A} \mathclose{}\right)
+E         ?                                 -------- -
+E         + \mathrm{rank} \mathopen{}\left( A \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1257: AssertionError
+_ test_call_rank[rank(b)-\\mathrm{rank} \\mathopen{}\\left( \\mathbf{b} \\mathclose{}\\right)] _
+
+code = 'rank(b)'
+latex = '\\mathrm{rank} \\mathopen{}\\left( \\mathbf{b} \\mathclose{}\\right)'
+
+    @pytest.mark.parametrize(
+        "code,latex",
+        [
+            ("rank(A)", r"\mathrm{rank} \mathopen{}\left( \mathbf{A} \mathclose{}\right)"),
+            ("rank(b)", r"\mathrm{rank} \mathopen{}\left( \mathbf{b} \mathclose{}\right)"),
+        ],
+    )
+    def test_call_rank(code: str, latex: str) -> None:
+        tree = ast_utils.parse_expr(code)
+        assert isinstance(tree, ast.Call)
+>       assert expression_codegen.ExpressionCodegen().visit(tree) == latex
+E       AssertionError: assert '\\mathrm{ran...ose{}\\right)' == '\\mathrm{ran...ose{}\\right)'
+E         
+E         - \mathrm{rank} \mathopen{}\left( \mathbf{b} \mathclose{}\right)
+E         ?                                 ----- ----
+E         + \mathrm{rank} \mathopen{}\left( b \mathclose{}\right)
+
+src/latexify/codegen/expression_codegen_test.py:1257: AssertionError
+=========================== short test summary info ============================
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_determinant[det(A)-\\det \\mathopen{}\\left( \\mathbf{A} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_determinant[det(b)-\\det \\mathopen{}\\left( \\mathbf{b} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_determinant[det([[1, 2], [3, 4]])-\\det \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_determinant[det([[1, 2, 3], [4, 5, 6], [7, 8, 9]])-\\det \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_determinant[det([[a, b], [c, d]])-\\det \\mathopen{}\\left( \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_determinant[det(C @ D)-\\det \\mathopen{}\\left( \\mathbf{C} \\mathbf{D} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_determinant[det(transpose(E))-\\det \\mathopen{}\\left( \\mathbf{E}^{\\mathrm{T}} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_determinant[det(np.array([[1, 2], [3, 4]]))-\\det \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_trace[trace(A)-\\mathrm{tr} \\mathopen{}\\left( \\mathbf{A} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_trace[trace(b)-\\mathrm{tr} \\mathopen{}\\left( \\mathbf{b} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_trace[trace([[1, 2], [3, 4]])-\\mathrm{tr} \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_trace[trace([[1, 2, 3], [4, 5, 6], [7, 8, 9]])-\\mathrm{tr} \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_trace[trace([[a, b], [c, d]])-\\mathrm{tr} \\mathopen{}\\left( \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_trace[trace(C @ D)-\\mathrm{tr} \\mathopen{}\\left( \\mathbf{C} \\mathbf{D} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_trace[trace(transpose(E))-\\mathrm{tr} \\mathopen{}\\left( \\mathbf{E}^{\\mathrm{T}} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_trace[trace(np.array([[1, 2], [3, 4]]))-\\mathrm{tr} \\mathopen{}\\left( \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_inv[inv(A)-\\mathbf{A}^{-1}]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_inv[inv(b)-\\mathbf{b}^{-1}]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_inv[inv([[1, 2], [3, 4]])-\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix}^{-1}]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_inv[inv([[1, 2, 3], [4, 5, 6], [7, 8, 9]])-\\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix}^{-1}]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_inv[inv([[a, b], [c, d]])-\\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix}^{-1}]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_inv[inv(C @ D)-\\left( \\mathbf{C} \\mathbf{D} \\right)^{-1}]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_inv[inv(transpose(E))-\\left( \\mathbf{E}^{\\mathrm{T}} \\right)^{-1}]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_inv[inv(np.array([[1, 2], [3, 4]]))-\\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix}^{-1}]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_norm[norm(A)-\\left\\| \\mathbf{A} \\right\\|]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_norm[norm(b)-\\left\\| \\mathbf{b} \\right\\|]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_norm[norm([[1, 2], [3, 4]])-\\left\\| \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\right\\|]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_norm[norm([[1, 2, 3], [4, 5, 6], [7, 8, 9]])-\\left\\| \\begin{bmatrix} 1 & 2 & 3 \\\\ 4 & 5 & 6 \\\\ 7 & 8 & 9 \\end{bmatrix} \\right\\|]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_norm[norm([[a, b], [c, d]])-\\left\\| \\begin{bmatrix} a & b \\\\ c & d \\end{bmatrix} \\right\\|]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_norm[norm(C @ D)-\\left\\| \\mathbf{C} \\mathbf{D} \\right\\|]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_norm[norm(transpose(E))-\\left\\| \\mathbf{E}^{\\mathrm{T}} \\right\\|]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_norm[norm(np.array([[1, 2], [3, 4]]))-\\left\\| \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\right\\|]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_rank[rank(A)-\\mathrm{rank} \\mathopen{}\\left( \\mathbf{A} \\mathclose{}\\right)]
+FAILED src/latexify/codegen/expression_codegen_test.py::test_call_rank[rank(b)-\\mathrm{rank} \\mathopen{}\\left( \\mathbf{b} \\mathclose{}\\right)]
+34 failed, 651 passed in 0.91s
