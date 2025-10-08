@@ -1654,4 +1654,4 @@ FAILED src/latexify/codegen/expression_codegen_test.py::test_call_norm[norm(tran
 FAILED src/latexify/codegen/expression_codegen_test.py::test_call_norm[norm(np.array([[1, 2], [3, 4]]))-\\left\\| \\begin{bmatrix} 1 & 2 \\\\ 3 & 4 \\end{bmatrix} \\right\\|]
 FAILED src/latexify/codegen/expression_codegen_test.py::test_call_rank[rank(A)-\\mathrm{rank} \\mathopen{}\\left( \\mathbf{A} \\mathclose{}\\right)]
 FAILED src/latexify/codegen/expression_codegen_test.py::test_call_rank[rank(b)-\\mathrm{rank} \\mathopen{}\\left( \\mathbf{b} \\mathclose{}\\right)]
-34 failed, 651 passed in 0.91s
+34 failed, 651 passed in 1.83s

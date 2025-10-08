@@ -22,15 +22,42 @@ EOF
 }
 
 init_workspace() {
+  echo "==> Creating workspace directories: WS=$WS, ART=$ART"
   mkdir -p "$WS" "$ART"
+  
+  # Debug info
+  echo "==> Checking directory permissions:"
+  ls -ld "$WS" "$ART"
+  
   if [[ ! -f "$WS/.baseline_ready" ]]; then
+    echo "==> Initializing workspace from $HOST"
     cp -a "$HOST"/. "$WS"/
+    echo "==> Reinitializing git repository"
     rm -rf "$WS/.git"
-    git -C "$WS" init -q
+    pwd
+    echo "==> Current directory contents of $WS:"
+    ls -la "$WS"
+    
+    echo "==> Initializing git repository in $WS"
+    cd "$WS" || exit 1
+    # Allow git to work with the directory regardless of ownership
+    git config --global --add safe.directory "$WS"
+    if ! git init -q; then
+      echo "==> Failed to initialize git repository in $WS" >&2
+      exit 1
+    fi
+    
+    echo "==> Verifying git repository:"
+    git rev-parse --git-dir
+    
+    echo "==> Configuring git repository"
     git -C "$WS" config user.name  "offline-pack"
     git -C "$WS" config user.email "offline-pack@example.invalid"
+    echo "==> Adding files to git"
     git -C "$WS" add -A
+    echo "==> Creating baseline commit"
     git -C "$WS" commit -q -m "baseline: vendor snapshot of google/latexify_py@d11334e9"
+    echo "==> Creating baseline tag"
     git -C "$WS" tag -f baseline >/dev/null
     touch "$WS/.baseline_ready"
   fi
