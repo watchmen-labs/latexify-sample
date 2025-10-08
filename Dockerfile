@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.6
 FROM scratch AS base
-ADD docker/base-rootfs.tar /
+ADD base-rootfs.tar.gz /
 
 ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8 \

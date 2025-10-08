@@ -1,7 +1,7 @@
 
 ## **Build Command**
 ```bash
-docker build-t latexify-offline -f Dockerfile .
+docker build -t latexify-offline -f Dockerfile .
 ```
 
 ## **Pytest Command**
