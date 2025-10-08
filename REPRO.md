@@ -1,9 +1,5 @@
 # Offline Repro Pack for google/latexify_py
 
-Vendored snapshot commit:
-
-    fea55f8a0389b0e196d967d2eef8b84883d02ff1
-
 ## Build (offline)
 
 ```bash
